@@ -4,9 +4,7 @@ on emmc
     mkdir /data 0771 system system
     mkdir /cache 0770 system cache
     mkdir /devlog 0700 root root
-    devwait emmc@system
     mount ext4 emmc@system /system ro barrier=1
-    devwait emmc@userdata
 #   exec /system/bin/e2fsck -p emmc@userdata
     mount ext4 emmc@userdata /data nosuid nodev barrier=1 noauto_da_alloc
     mount ext4 emmc@cache /cache nosuid nodev barrier=1
@@ -320,7 +318,6 @@ service sdcard /system/bin/sdcard /data/media 1023 1023
 # bugreport is triggered by the VOLUME-DOWN and VOLUME-UP keys/
 service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
     disabled
-    cgroup bg
     oneshot
     keycodes 115 114
 
@@ -377,13 +374,6 @@ service poweron_modem /system/bin/poweron_modem_fls.sh /data/modem_work/
     oneshot
 #    start gsm0710mux
     disabled
-
-# hs_uart
-service hs_uart /system/bin/hs_uart
-    class main
-    user root
-    group system misc input
-    oneshot
 
 # Recovery daemon: configure MSC partition (misc)
 #service recoveryd /system/bin/recoveryd /dev/block/mmcblk0p17
@@ -449,14 +439,12 @@ service setup_fs /system/bin/setup_fs \
 
 service htc_ebdlogd /system/bin/htc_ebdlogd -s -k -P 7
     user root
-    cgroup bg
     disabled
     oneshot
     ioprio idle 0
 
 service htc_ebdlogd_rel /system/bin/htc_ebdlogd -s -k
     user root
-    cgroup bg
     disabled
     oneshot
     ioprio idle 0
