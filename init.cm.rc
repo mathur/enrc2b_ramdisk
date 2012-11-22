@@ -437,9 +437,6 @@ service setup_fs /system/bin/setup_fs \
     group root
     oneshot
 
-on property:ro.build.tags=release-keys
-    start htc_ebdlogd_rel
-
 service cand /system/bin/cand
 	class main
 	user root
